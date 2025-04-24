@@ -17,7 +17,7 @@ export default function AnimatedPopupPage() {
   const [selected, setSelected] = useState("");
   const [acType, setAcType] = useState("");
   const [FurnaceType, setFurnaceType] = useState("");
-  const [capacity, setCapacity] = useState(0);
+  const [capacity, setCapacity] = useState([0, 0]);
   const [unitCost, setUnitCost] = useState([0, 0]);
   const [installation, setInstallation] = useState([0, 0]);
   const [step, setStep] = useState(1);
@@ -38,32 +38,56 @@ export default function AnimatedPopupPage() {
     setOpen(false);
     setStep(1);
   };
-
+  console.log(capacity[0]);
   const handelAcUnitCost = () => {
-    if (capacity === 1.5) {
-      setUnitCost([1600, 4800]);
-    } else if (capacity === 2) {
-      setUnitCost([1600, 7300]);
-    } else if (capacity === 2.5) {
-      setUnitCost([2100, 7300]);
-    } else if (capacity === 3) {
-      setUnitCost([2600, 9900]);
-    } else {
-      setUnitCost(0);
+    if (selected === "Heating") {
+      if (capacity[1] === 1) {
+        setUnitCost([1600, 3200]);
+      } else if (capacity[1] === 2) {
+        setUnitCost([1600, 4800]);
+      } else if (capacity[1] === 3) {
+        setUnitCost([2100, 5200]);
+      } else if (capacity[1] === 4) {
+        setUnitCost([2600, 6200]);
+      }
+    } else if (selected === "Cooling") {
+      if (capacity[0] === 1.5) {
+        setUnitCost([1600, 4800]);
+      } else if (capacity[0] === 2) {
+        setUnitCost([1600, 7300]);
+      } else if (capacity[0] === 2.5) {
+        setUnitCost([2100, 7300]);
+      } else if (capacity[0] === 3) {
+        setUnitCost([2600, 9900]);
+      } else {
+        setUnitCost(0);
+      }
     }
   };
 
   const handleInstallationCost = () => {
-    if (capacity === 1.5) {
-      setInstallation([800, 4300]);
-    } else if (capacity === 2) {
-      setInstallation([1300, 6600]);
-    } else if (capacity === 2.5) {
-      setInstallation([1900, 6600]);
-    } else if (capacity === 3) {
-      setInstallation([2500, 8800]);
-    } else {
-      setInstallation(0);
+    if (selected === "Heating") {
+      if (capacity[1] === 1) {
+        setInstallation([500, 1900]);
+      } else if (capacity[1] === 2) {
+        setInstallation([500, 2000]);
+      } else if (capacity[1] === 3) {
+        setInstallation([1100, 3200]);
+      } else if (capacity[1] === 4) {
+        setInstallation([1400, 4200]);
+      }
+    } else if (selected === "Cooling") {
+      if (capacity[0] === 1.5) {
+        setInstallation([800, 4300]);
+      } else if (capacity[0] === 2) {
+        setInstallation([1300, 6600]);
+      } else if (capacity[0] === 2.5) {
+        setInstallation([1900, 6600]);
+      } else if (capacity[0] === 3) {
+        setInstallation([2500, 8800]);
+      } else {
+        setInstallation(0);
+      }
     }
   };
   useEffect(() => {
@@ -75,82 +99,6 @@ export default function AnimatedPopupPage() {
     installation[0] + unitCost[0],
     installation[1] + unitCost[1],
   ];
-
-  const UnitSystem = () => {
-    if (selected === "Heating") {
-      return (
-        <motion.div
-          className="flex flex-wrap justify-center gap-5 px-5"
-          initial={{ opacity: 0, x: 200 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Button
-              variant="outlined"
-              className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
-              onClick={() => {
-                handleNextStep();
-                setAcType("Furnace");
-              }}
-              sx={{
-                borderColor: "#66646A",
-                borderWidth: "1.8px",
-                color: "#211E27",
-                textTransform: "capitalize",
-              }}
-            >
-              <img
-                src="/ac_calculator_imgs/ac-split-condenser1.png"
-                alt="Heating Icon"
-                className="w-16 h-16 mb-2"
-              />
-              Furnace
-            </Button>
-          </motion.div>
-        </motion.div>
-      );
-    } else if (selected === "Cooling") {
-      return (
-        <motion.div
-          className="flex flex-wrap justify-center gap-5 px-5"
-          initial={{ opacity: 0, x: 200 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Button
-              variant="outlined"
-              className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
-              onClick={() => {
-                handleNextStep();
-                setAcType("Central AC");
-              }}
-              sx={{
-                borderColor: "#66646A",
-                borderWidth: "1.8px",
-                color: "#211E27",
-                textTransform: "capitalize",
-              }}
-            >
-              <img
-                src="/ac_calculator_imgs/ac-split-condenser1.png"
-                alt="Heating Icon"
-                className="w-16 h-16 mb-2"
-              />
-              Central AC
-            </Button>
-          </motion.div>
-        </motion.div>
-      );
-    }
-  };
 
   const renderStepContent = () => {
     if (selected === "Heating") {
@@ -370,7 +318,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(1.5);
+                    setCapacity([45000, 1]);
                   }}
                 >
                   less than 1,000 Sq. ft.
@@ -401,7 +349,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(2);
+                    setCapacity([60000, 2]);
                   }}
                 >
                   1,000 - 2,000 Sq. ft.
@@ -432,7 +380,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(2.5);
+                    setCapacity([60000, 3]);
                   }}
                 >
                   2,001 - 3,000 Sq. ft.
@@ -463,7 +411,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(3);
+                    setCapacity([60000, 4]);
                   }}
                 >
                   larger than 3,000 Sq. ft.
@@ -637,7 +585,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(1.5);
+                    setCapacity([1.5, 0]);
                   }}
                 >
                   less than 1,000 Sq. ft.
@@ -668,7 +616,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(2);
+                    setCapacity([2, 0]);
                   }}
                 >
                   1,000 - 2,000 Sq. ft.
@@ -699,7 +647,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(2.5);
+                    setCapacity([2.5, 0]);
                   }}
                 >
                   2,001 - 3,000 Sq. ft.
@@ -730,7 +678,7 @@ export default function AnimatedPopupPage() {
                   }}
                   onClick={() => {
                     handleNextStep();
-                    setCapacity(3);
+                    setCapacity([3, 0]);
                   }}
                 >
                   larger than 3,000 Sq. ft.
@@ -865,7 +813,7 @@ export default function AnimatedPopupPage() {
                         : "Heating/Cooling Capacity"}
                     </p>
                     <p className="sm:text-lg text-sm font-semibold">
-                      {capacity} {selected === "Heating" ? "BTUs" : "tons"}
+                      {capacity[0]} {selected === "Heating" ? "BTUs" : "tons"}
                     </p>
                   </div>
                   {selected === "Heating" && (
@@ -922,7 +870,7 @@ export default function AnimatedPopupPage() {
                 <button
                   className="border-b border-purple-600 text-purple-600 font-semibold sm:text-lg"
                   onClick={() => {
-                    setFinished(false), setAcType(""), setCapacity(0);
+                    setFinished(false), setAcType(""), setCapacity(0, 0);
                   }}
                 >
                   Restart

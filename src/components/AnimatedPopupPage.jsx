@@ -9,20 +9,20 @@ import {
   LinearProgress,
   IconButton,
 } from "@mui/material";
-import { AcUnit, Close } from "@mui/icons-material";
+import { AcUnit, Close, KeyboardBackspace } from "@mui/icons-material";
 
 export default function AnimatedPopupPage() {
   const [open, setOpen] = useState(false);
   const [finished, setFinished] = useState(false);
   const [selected, setSelected] = useState("");
   const [acType, setAcType] = useState("");
-  const [FurnaceType, setFurnaceType] = useState("");
+  const [heatPumpTon, setHeatPumpTon] = useState(0);
   const [capacity, setCapacity] = useState([0, 0]);
   const [unitCost, setUnitCost] = useState([0, 0]);
   const [installation, setInstallation] = useState([0, 0]);
   const [step, setStep] = useState(1);
 
-  const totalSteps = selected === "Heating" ? 5 : 4;
+  const totalSteps = selected === "Heating" ? 4 : 4;
 
   const handlePrimaryClick = (type) => {
     setSelected(type);
@@ -38,7 +38,14 @@ export default function AnimatedPopupPage() {
     setOpen(false);
     setStep(1);
   };
-  console.log(capacity[0]);
+  const handleBack = () => {
+    if (step === 1) {
+      setStep(1);
+    } else {
+      setStep(step - 1);
+    }
+  };
+
   const handelAcUnitCost = () => {
     if (selected === "Heating") {
       if (capacity[1] === 1) {
@@ -58,6 +65,18 @@ export default function AnimatedPopupPage() {
       } else if (capacity[0] === 2.5) {
         setUnitCost([2100, 7300]);
       } else if (capacity[0] === 3) {
+        setUnitCost([2600, 9900]);
+      } else {
+        setUnitCost(0);
+      }
+    } else if (selected === "Heat Pump") {
+      if (capacity[1] === 1) {
+        setUnitCost([1200, 4800]);
+      } else if (capacity[1] === 2) {
+        setUnitCost([1600, 6100]);
+      } else if (capacity[1] === 3) {
+        setUnitCost([2100, 8200]);
+      } else if (capacity[1] === 4) {
         setUnitCost([2600, 9900]);
       } else {
         setUnitCost(0);
@@ -88,6 +107,18 @@ export default function AnimatedPopupPage() {
       } else {
         setInstallation(0);
       }
+    } else if (selected === "Heat Pump") {
+      if (capacity[1] === 1) {
+        setInstallation([800, 3300]);
+      } else if (capacity[1] === 2) {
+        setInstallation([1100, 4200]);
+      } else if (capacity[1] === 3) {
+        setInstallation([1500, 3100]);
+      } else if (capacity[1] === 4) {
+        setInstallation([2200, 7600]);
+      } else {
+        setInstallation(0);
+      }
     }
   };
   useEffect(() => {
@@ -101,7 +132,7 @@ export default function AnimatedPopupPage() {
   ];
 
   const renderStepContent = () => {
-    if (selected === "Heating") {
+    if (selected === "Heat Pump") {
       if (step === 1) {
         return (
           <motion.div>
@@ -125,30 +156,179 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   onClick={() => {
                     handleNextStep();
-                    setAcType("Furnace");
+                    setAcType("Heat Pump");
                   }}
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
+                    fontSize: "17px",
+                    fontWeight: 600,
                     textTransform: "capitalize",
                   }}
                 >
                   <img
                     src="/ac_calculator_imgs/ac-split-condenser1.png"
                     alt="Heating Icon"
-                    className="w-16 h-16 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
-                  Furnace
+                  Heat Pump
                 </Button>
               </motion.div>
             </motion.div>
           </motion.div>
         );
       } else if (step === 2) {
+        return (
+          <>
+            <motion.h2
+              className="sm:text-2xl text-lg font-semibold mb-6 text-[#39215c]"
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              How large is your home?
+            </motion.h2>
+            <motion.div
+              className="flex flex-wrap justify-center gap-3 w-full items-center flex-col "
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <motion.div
+                className="w-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Button
+                  variant="outlined"
+                  className="py-10 border-2 rounded-lg"
+                  sx={{
+                    color: "#211E27",
+                    textTransform: "capitalize",
+                    borderColor: "#66646A",
+                    borderWidth: "1.8px",
+                    fontSize: {
+                      xs: "14px", // for mobile
+                      sm: "16px",
+                      md: "17px", // for desktop
+                    },
+                    fontWeight: "550",
+                    padding: "15px 0px",
+                    width: "90%",
+                  }}
+                  onClick={() => {
+                    handleNextStep();
+                    setCapacity([13000, 1]);
+                    setHeatPumpTon(1);
+                  }}
+                >
+                  less than 1,000 Sq. ft.
+                </Button>
+              </motion.div>
+
+              <motion.div
+                className="w-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Button
+                  variant="outlined"
+                  className="py-10 border-2 rounded-lg"
+                  sx={{
+                    color: "#211E27",
+                    textTransform: "capitalize",
+                    borderColor: "#66646A",
+                    borderWidth: "1.8px",
+                    fontSize: {
+                      xs: "14px", // for mobile
+                      sm: "16px",
+                      md: "17px", // for desktop
+                    },
+                    fontWeight: "550",
+                    padding: "15px 0px",
+                    width: "90%",
+                  }}
+                  onClick={() => {
+                    handleNextStep();
+                    setCapacity([7500, 2]);
+                    setHeatPumpTon(2);
+                  }}
+                >
+                  1,000 - 2,000 Sq. ft.
+                </Button>
+              </motion.div>
+
+              <motion.div
+                className="w-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Button
+                  variant="outlined"
+                  className="py-10 border-2 rounded-lg"
+                  sx={{
+                    color: "#211E27",
+                    textTransform: "capitalize",
+                    borderColor: "#66646A",
+                    borderWidth: "1.8px",
+                    fontSize: {
+                      xs: "14px", // for mobile
+                      sm: "16px",
+                      md: "17px", // for desktop
+                    },
+                    fontWeight: "550",
+                    padding: "15px 0px",
+                    width: "90%",
+                  }}
+                  onClick={() => {
+                    handleNextStep();
+                    setCapacity([31000, 3]);
+                    setHeatPumpTon(4);
+                  }}
+                >
+                  2,001 - 3,000 Sq. ft.
+                </Button>
+              </motion.div>
+
+              <motion.div
+                className="w-full"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Button
+                  variant="outlined"
+                  className="py-10 border-2 rounded-lg"
+                  sx={{
+                    color: "#211E27",
+                    textTransform: "capitalize",
+                    borderColor: "#66646A",
+                    borderWidth: "1.8px",
+                    fontSize: {
+                      xs: "14px", // for mobile
+                      sm: "16px",
+                      md: "17px", // for desktop
+                    },
+                    fontWeight: "550",
+                    padding: "15px 0px",
+                    width: "90%",
+                  }}
+                  onClick={() => {
+                    handleNextStep();
+                    setCapacity([31000, 4]);
+                    setHeatPumpTon(4);
+                  }}
+                >
+                  larger than 3,000 Sq. ft.
+                </Button>
+              </motion.div>
+            </motion.div>
+          </>
+        );
+      } else if (step === 3) {
         return (
           <>
             <motion.h2
@@ -171,25 +351,23 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
                     textTransform: "capitalize",
                     fontSize: "17px",
-                    fontWeight: "550",
+                    fontWeight: "600",
                   }}
-                  onClick={() => {
-                    handleNextStep(), setFurnaceType("Electric");
-                  }}
+                  onClick={handleNextStep}
                 >
                   <img
                     src="/ac_calculator_imgs/1-storey-home.png"
                     alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
-                  Electric
+                  1
                 </Button>
               </motion.div>
 
@@ -199,85 +377,84 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
                     textTransform: "capitalize",
                     fontSize: "17px",
-                    fontWeight: "550",
+                    fontWeight: "600",
                   }}
-                  onClick={() => {
-                    handleNextStep(), setFurnaceType("Gas-Fired");
-                  }}
+                  onClick={handleNextStep}
                 >
                   <img
                     src="/ac_calculator_imgs/2-storey-home.png"
                     alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
-                  Gas-Fired
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Button
-                  variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
-                  sx={{
-                    borderColor: "#66646A",
-                    borderWidth: "1.8px",
-                    color: "#211E27",
-                    textTransform: "capitalize",
-                    fontSize: "17px",
-                    fontWeight: "550",
-                  }}
-                  onClick={() => {
-                    handleNextStep(), setFurnaceType("Oil");
-                  }}
-                >
-                  <img
-                    src="/ac_calculator_imgs/2-storey-home.png"
-                    alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
-                  />
-                  Oil
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Button
-                  variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
-                  sx={{
-                    borderColor: "#66646A",
-                    borderWidth: "1.8px",
-                    color: "#211E27",
-                    textTransform: "capitalize",
-                    fontSize: "17px",
-                    fontWeight: "550",
-                  }}
-                  onClick={() => {
-                    handleNextStep(), setFurnaceType("Solid-Fuel Fired");
-                  }}
-                >
-                  <img
-                    src="/ac_calculator_imgs/2-storey-home.png"
-                    alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
-                  />
-                  Solid-Fuel Fired
+                  2+
                 </Button>
               </motion.div>
             </motion.div>
           </>
         );
-      } else if (step === 3) {
+      } else {
+        setTimeout(() => {
+          setFinished(true);
+          handleClose();
+        }, 300);
+      }
+    } else if (selected === "Heating") {
+      if (step === 1) {
+        return (
+          <motion.div>
+            <motion.h2
+              className="sm:text-2xl text-lg font-semibold mb-6 text-[#39215c]"
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              What type of unit/system do you have?
+            </motion.h2>
+            <motion.div
+              className="flex flex-wrap justify-center gap-5 px-5"
+              initial={{ opacity: 0, x: 200 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Button
+                  variant="outlined"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
+                  onClick={() => {
+                    handleNextStep();
+                    setAcType("Gas Furnace");
+                  }}
+                  sx={{
+                    borderColor: "#66646A",
+                    borderWidth: "1.8px",
+                    color: "#211E27",
+                    fontSize: "17px",
+                    fontWeight: 600,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  <img
+                    src="/ac_calculator_imgs/ac-split-condenser1.png"
+                    alt="Heating Icon"
+                    className="w-24 h-24 mb-2"
+                  />
+                  Gas Furnace
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        );
+      } else if (step === 2) {
         return (
           <>
             <motion.h2
@@ -420,7 +597,7 @@ export default function AnimatedPopupPage() {
             </motion.div>
           </>
         );
-      } else if (step === 4) {
+      } else if (step === 3) {
         return (
           <>
             <motion.h2
@@ -443,21 +620,21 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
                     textTransform: "capitalize",
                     fontSize: "17px",
-                    fontWeight: "550",
+                    fontWeight: "600",
                   }}
                   onClick={handleNextStep}
                 >
                   <img
                     src="/ac_calculator_imgs/1-storey-home.png"
                     alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
                   1
                 </Button>
@@ -469,21 +646,21 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
                     textTransform: "capitalize",
                     fontSize: "17px",
-                    fontWeight: "550",
+                    fontWeight: "600",
                   }}
                   onClick={handleNextStep}
                 >
                   <img
                     src="/ac_calculator_imgs/2-storey-home.png"
                     alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
                   2+
                 </Button>
@@ -521,7 +698,7 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   onClick={() => {
                     handleNextStep();
                     setAcType("Central AC");
@@ -530,13 +707,15 @@ export default function AnimatedPopupPage() {
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
+                    fontSize: "17px",
+                    fontWeight: 600,
                     textTransform: "capitalize",
                   }}
                 >
                   <img
                     src="/ac_calculator_imgs/ac-split-condenser1.png"
                     alt="Heating Icon"
-                    className="w-16 h-16 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
                   Central AC
                 </Button>
@@ -710,7 +889,7 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
@@ -736,21 +915,21 @@ export default function AnimatedPopupPage() {
               >
                 <Button
                   variant="outlined"
-                  className="flex flex-col items-center p-4 border rounded-lg w-36 h-36"
+                  className="flex flex-col items-center p-4 border rounded-lg w-40 h-40"
                   sx={{
                     borderColor: "#66646A",
                     borderWidth: "1.8px",
                     color: "#211E27",
                     textTransform: "capitalize",
                     fontSize: "17px",
-                    fontWeight: "550",
+                    fontWeight: "600",
                   }}
                   onClick={handleNextStep}
                 >
                   <img
                     src="/ac_calculator_imgs/2-storey-home.png"
                     alt="Heating Icon"
-                    className="w-20 h-20 mb-2"
+                    className="w-24 h-24 mb-2"
                   />
                   2+
                 </Button>
@@ -808,21 +987,24 @@ export default function AnimatedPopupPage() {
                   </div>
                   <div className="w-full flex items-center justify-between mb-1">
                     <p className="sm:text-lg text-sm font-semibold">
-                      {selected === "Heating"
+                      {selected === "Heating" || selected === "Heat Pump"
                         ? "Size"
                         : "Heating/Cooling Capacity"}
                     </p>
                     <p className="sm:text-lg text-sm font-semibold">
-                      {capacity[0]} {selected === "Heating" ? "BTUs" : "tons"}
+                      {capacity[0]}{" "}
+                      {selected === "Heating" || selected === "Heat Pump"
+                        ? "BTUs"
+                        : "tons"}
                     </p>
                   </div>
-                  {selected === "Heating" && (
+                  {selected === "Heat Pump" && (
                     <div className="w-full flex items-center justify-between mb-1">
                       <p className="sm:text-lg text-sm font-semibold">
-                        Fuel Type
+                        Heating/Cooling Capacity
                       </p>
                       <p className="sm:text-lg text-sm font-semibold">
-                        {FurnaceType}
+                        {heatPumpTon} tons
                       </p>
                     </div>
                   )}
@@ -897,21 +1079,21 @@ export default function AnimatedPopupPage() {
                 >
                   <Button
                     variant="outlined"
-                    className="flex flex-col items-center p-6 border rounded-lg w-36 h-36"
+                    className="flex flex-col items-center p-6 border rounded-lg w-40 h-40"
                     sx={{
                       borderColor: "#66646A",
                       borderWidth: "1.8px",
                       color: "#211E27",
                       textTransform: "capitalize",
                       fontSize: "17px",
-                      fontWeight: "550",
+                      fontWeight: "600",
                     }}
                     onClick={() => handlePrimaryClick("Heating")}
                   >
                     <img
                       src="/ac_calculator_imgs/heating-icon.png"
                       alt="Heating Icon"
-                      className="w-12 h-12 mb-2"
+                      className="w-24 h-24 mb-2"
                     />
                     Heating
                   </Button>
@@ -923,21 +1105,21 @@ export default function AnimatedPopupPage() {
                 >
                   <Button
                     variant="outlined"
-                    className="flex flex-col items-center p-6 border rounded-lg w-36 h-36"
+                    className="flex flex-col items-center p-6 border rounded-lg w-40 h-40"
                     sx={{
                       borderColor: "#66646A",
                       borderWidth: "1.8px",
                       color: "#211E27",
                       textTransform: "capitalize",
                       fontSize: "17px",
-                      fontWeight: "550",
+                      fontWeight: "600",
                     }}
                     onClick={() => handlePrimaryClick("Cooling")}
                   >
                     <img
                       src="/ac_calculator_imgs/cooling-icon.png"
                       alt="Cooling Icon"
-                      className="w-12 h-12 mb-2"
+                      className="w-24 h-24 mb-2"
                     />
                     Cooling
                   </Button>
@@ -949,19 +1131,19 @@ export default function AnimatedPopupPage() {
                 >
                   <Button
                     variant="outlined"
-                    className="flex flex-col items-center p-6 border rounded-lg w-36 h-36 col-span-2 mx-auto"
+                    className="flex flex-col items-center p-6 border rounded-lg w-40 h-40 col-span-2 mx-auto "
                     sx={{
                       borderColor: "#66646A",
                       borderWidth: "1.8px",
                       color: "#211E27",
                       textTransform: "capitalize",
                       fontSize: "17px",
-                      fontWeight: "550",
+                      fontWeight: "600",
                     }}
-                    onClick={() => handlePrimaryClick("Both")}
+                    onClick={() => handlePrimaryClick("Heat Pump")}
                   >
                     <AcUnit className="text-purple-600 text-4xl mb-2" />
-                    Both
+                    Heat Pump
                   </Button>
                 </motion.div>
               </div>
@@ -1025,6 +1207,12 @@ export default function AnimatedPopupPage() {
                   className="absolute -top-16 sm:right-[-100%] right-[-90%]"
                 >
                   <Close />
+                </IconButton>
+                <IconButton
+                  onClick={handleBack}
+                  className="absolute -top-16 left-[-19%]"
+                >
+                  <KeyboardBackspace />
                 </IconButton>
               </div>
             </div>

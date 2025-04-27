@@ -171,7 +171,7 @@ export default function AnimatedPopupPage() {
                   }}
                 >
                   <img
-                    src="/ac_calculator_imgs/ac-split-condenser1.png"
+                    src="/ac_calculator_imgs/heatpump.png"
                     alt="Heating Icon"
                     className="w-24 h-24 mb-2"
                   />
@@ -444,7 +444,7 @@ export default function AnimatedPopupPage() {
                   }}
                 >
                   <img
-                    src="/ac_calculator_imgs/ac-split-condenser1.png"
+                    src="/ac_calculator_imgs/furnace.png"
                     alt="Heating Icon"
                     className="w-24 h-24 mb-2"
                   />
@@ -1142,7 +1142,11 @@ export default function AnimatedPopupPage() {
                     }}
                     onClick={() => handlePrimaryClick("Heat Pump")}
                   >
-                    <AcUnit className="text-purple-600 text-4xl mb-2" />
+                    <img
+                      src="/ac_calculator_imgs/heatpump.png"
+                      alt="Heating Icon"
+                      className="w-24 h-24 mb-2"
+                    />
                     Heat Pump
                   </Button>
                 </motion.div>
